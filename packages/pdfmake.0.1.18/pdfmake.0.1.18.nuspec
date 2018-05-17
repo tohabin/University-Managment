@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>pdfmake</id>
+    <version>0.1.18</version>
+    <title>pdfmake</title>
+    <authors>Devon Govett; Yassine Elouafi</authors>
+    <owners>Devon Govett; Yassine Elouafi</owners>
+    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>http://pdfmake.org/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Client/server side PDF printing in pure JavaScript.
+1. Link to pdfmake.js and vfs_fonts.js files
+2. Get to work!
+
+pdfmake is based on a truly amazing library pdfkit.org - credits to @devongovett.
+Big thanks to @yelouafi for making this library even better.</description>
+    <summary />
+    <language>en-US</language>
+    <tags>PDF JavaScript</tags>
+  </metadata>
+</package>

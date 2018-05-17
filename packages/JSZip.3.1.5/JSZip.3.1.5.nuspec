@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>JSZip</id>
+    <version>3.1.5</version>
+    <title>JSZip</title>
+    <authors>Stuart Knightley, David Duponchel</authors>
+    <owners>Stuart Knightley, David Duponchel</owners>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <projectUrl>https://stuk.github.io/jszip/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>JSZip is a JavaScript library for creating, reading and editing .zip files, with a lovely and simple API.</description>
+    <summary />
+    <releaseNotes>https://stuk.github.io/jszip/CHANGES.html</releaseNotes>
+    <tags>jszip js zip JavaScript</tags>
+  </metadata>
+</package>

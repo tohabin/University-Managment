@@ -1,0 +1,164 @@
+﻿@using UniversityManagementSystemApp.Models
+
+@{
+    ViewBag.Title = "SaveResult";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<Student> aStudents = ViewBag.StudentList;
+    List<Grade> aGrades = ViewBag.GradeList;
+}
+
+<link href="~/Content/bootstrap-datepicker3.min.css" rel="stylesheet" />
+<div>
+    <fieldset>
+        <legend>Save Result</legend>
+        <div align="center">
+            <form method="POST" id="SaveResult">
+                <table>
+                    <tr>
+                        <td><label for="StudentId">Registration Number</label></td>
+                        <td>
+                            <select name="StudentId" id="StudentId">
+                                <option value="" class="disabled">Please Select a Registration Number</option>
+                                @foreach (Student aStudent in aStudents)
+                                {
+                                    <option value="@aStudent.Id">@aStudent.RegistrationNumber</option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><label for="Name">Name</label></td>
+                        <td><input type="text" class="disabled" readonly="readonly" id="Name" name="Name" /></td>
+                    </tr>
+                    <tr>
+                        <td><label for="Email">Email</label></td>
+                        <td><input type="text" class="disabled" readonly="readonly" id="Email" name="Email" value="" /></td>
+                    </tr>
+                    <tr>
+                        <td><label for="Department">Department</label></td>
+
+                        <td><input type="text" class="disabled" readonly="readonly" id="Department" name="Department" value="" /></td>
+                        @*<td><input type="text" class="disabled" style="display: none" id="Department_ID" name="Department_ID" value="" /></td>*@
+                    </tr>
+                    <tr>
+                        <td><label for="CourseId">Course Code</label></td>
+                        <td>
+                            <select id="CourseId" name="CourseId"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="GradeId"></label>Select Grade Letter</td>
+                        <td>
+                            <select name="GradeId" id="GradeId">
+                                <option value="" class="disabled">Please Select a Registration Number</option>
+                                @foreach (Grade aGrade in aGrades)
+                                {
+                                    <option value="@aGrade.Id">@aGrade.GradeLetter</option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><input type="submit" value="Assign" id="assignSubmit" name="assignSubmit" onclick="return test()" /></td>
+                    </tr>
+
+                </table>
+
+            </form>
+
+        </div>
+    </fieldset>
+    <div class="has-success">
+        @if (ViewBag.message != null)
+        {
+            <p>@ViewBag.message</p>
+        }
+    </div>
+</div>
+@section scripts
+    {
+    <script src="~/Scripts/jquery-2.2.4.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+    <script>
+        $().ready(function () {
+            $("#myCousrseEnroll").validate({
+                rules: {
+
+                    StudentId: "required",
+                    CourseId: "required",
+                    GradeId: "required"
+
+                },
+                messages: {
+
+
+                    StudentId: "Please select a registration number",
+                    CourseId: "Please select a course",
+                    GradeId: "Please select a grade"
+
+
+                }
+            });
+        });
+
+
+
+        $("#StudentId").change(function () {
+            $("#Name").val('');
+            $("#Email").val('');
+            $("#Department").val('');
+
+
+
+            var regID = $("#StudentId").val();
+
+            var json3 = { StudentId: regID };
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetStudentByRegtId", "Course")',
+                //url: '/Course/GetTeacherById',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json3),
+                success: function (data) {
+                    $.each(data, function (key, value) {
+                        //alert(key);
+                        $("#Name").val(value.Name).show();
+                        $("#Email").val(value.Email).show();
+                        $("#Department").val(value.StdDepartmentCode).show();
+                        //$("#Department_ID").val(value.DepartmentId).hide();
+                    });
+                }
+            });
+        });
+
+
+
+        $("#StudentId").change(function () {
+
+
+            $("#CourseId").empty();
+            $("#CourseId").append("<option value=" + "" + ">Pls Select</option>");
+
+            var regID = $("#StudentId").val();
+            var json = { StudentId: regID };
+            $.ajax({
+                url: '@Url.Action("GetCoursesByRegtId", "Course")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json),
+                cache: false,
+                type: "POST",
+                success: function (result) {
+                    $.each(result, function (key, value) {
+                        //alert(key);
+                        $("#CourseId").append('<option value=' + value.Id + '>' + value.Code + '</option>');
+                    });
+
+                },
+
+            });
+        });
+    </script>
+}

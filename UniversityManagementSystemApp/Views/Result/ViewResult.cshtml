@@ -1,0 +1,191 @@
+﻿@using UniversityManagementSystemApp.Models
+
+@{
+    ViewBag.Title = "ViewResult";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<Student> aStudents = ViewBag.StudentList;
+}
+
+<link href="~/Content/DataTables/css/jquery.dataTables.css" rel="stylesheet" />
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6">
+            <h4 class=caption>View Course Statics</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-4"></div>
+        <div>
+            <form method="POST" id="ViewResult">
+                <table>
+                    <tr>
+                        <td><label for="StudentId">Registration Number</label></td>
+                        <td>
+                            <select name="StudentId" id="StudentId">
+                                <option value="" class="disabled">Please Select a Registration Number</option>
+                                @foreach (Student aStudent in aStudents)
+                                {
+                                    <option value="@aStudent.Id">@aStudent.RegistrationNumber</option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><label for="Name">Name</label></td>
+                        <td><input type="text" class="disabled" readonly="readonly" id="Name" name="Name" /></td>
+                    </tr>
+                    <tr>
+                        <td><label for="Email">Email</label></td>
+                        <td><input type="text" class="disabled" readonly="readonly" id="Email" name="Email" value="" /></td>
+                    </tr>
+                    <tr>
+                        <td><label for="Department">Department</label></td>
+
+                        <td><input type="text" class="disabled" readonly="readonly" id="Department" name="Department" value="" /></td>
+                        @*<td><input type="text" class="disabled" style="display: none" id="Department_ID" name="Department_ID" value="" /></td>*@
+                    </tr>
+                </table>
+
+            </form>
+        </div>
+        <div class="col-lg-4"></div>
+
+    </div>
+    <hr/>
+    
+</div>
+<table id="myTable" class="table table-responsive table-hover">
+    <thead>
+        <tr>
+            <td>Course Code</td>
+            <td>Name/Title</td>
+            <td>Grade Letter</td>
+
+        </tr>
+    </thead>
+    <tbody id="tablebody"></tbody>
+</table>
+@*<div class = "col-sm-2" >
+    <div class = "btnbtn-success" > @Html.ActionLink("Create Pdf", "CreatePdf", "Result") < /div>
+
+    </div> </div>*@
+<p>
+
+
+</p>
+@section scripts
+{
+    <script src="~/Scripts/jquery-2.2.4.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.buttons.min.js"></script>
+    <script src="~/Scripts/DataTables/buttons.html5.min.js"></script>
+    <script src="~/Scripts/DataTables/buttons.flash.min.js"></script>
+    <script src="~/Scripts/pdfmake/pdfmake.min.js"></script>
+    <script src="~/Scripts/pdfmake/vfs_fonts.js"></script>
+    <script src="~/Scripts/jszip.min.js"></script>
+    <script src="~/Scripts/DataTables/buttons.print.min.js"></script>
+    <script>
+    $().ready(function () {
+        $("#ViewResult").validate({
+            rules: {
+                StudentId: "required",
+
+
+            },
+            messages: {
+                StudentId: "Please select a registration number",
+
+
+            }
+        });
+    });
+
+
+    $("#StudentId").change(function () {
+        $("#Name").val('');
+        $("#Email").val('');
+        $("#Department").val('');
+
+
+        var regID = $("#StudentId").val();
+
+        var json3 = { StudentId: regID };
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetStudentByRegtId", "Course")',
+            //url: '/Course/GetTeacherById',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(json3),
+            success: function (data) {
+                $.each(data, function (key, value) {
+                    //alert(key);
+                    $("#Name").val(value.Name).show();
+                    $("#Email").val(value.Email).show();
+                    $("#Department").val(value.StdDepartmentCode).show();
+                    //$("#Department_ID").val(value.DepartmentId).hide();
+                });
+            }
+        });
+    });
+
+
+    $(document).ready(function () {
+        $("#StudentId").change(function () {
+            var deptId = $("#StudentId").val();
+            $("#tablebody").empty();
+
+
+            var json = { StudentId: deptId };
+            $.ajax({
+                type: "POST",
+                    @*//url: '@Url.Action("ViewAssigendCourse", "Course")',*@
+                    url: '/Result/ViewFullResult',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (data) {
+
+
+                        $.each(data, function (key, value) {
+
+                            if (value.GradeLetter === 'NA') {
+
+                                value.GradeLetter = "Not Graded Yet";
+                            }
+
+
+                            $("#tablebody").append('<tr><td>' + value.CourseCode + '</td><td>' + value.CourseName + '</td><td>' + value.GradeLetter + '</td></tr>');
+                        });
+                        $("#myTable").show();
+
+                        $('#myTable').DataTable({
+                            initComplete: function () {
+                                $('.buttons-pdf').html('<input type="submit" value="Export PDF" style="margin-right: 10px" class="btn btn-success Container" data-toggle="tooltip" />');
+                                
+                                $('.buttons-print').html('<input type="submit" value="Print" class="btn btn-primary Container" data-toggle="tooltip"/><hr/>');
+                            },
+                            dom: 'B<"clear">lfrtip',
+
+                            buttons: [
+                           
+                                 'pdf', 'print'
+
+                            ]
+
+
+
+
+                        });
+
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+
+
+

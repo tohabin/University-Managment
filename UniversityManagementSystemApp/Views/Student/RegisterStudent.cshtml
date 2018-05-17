@@ -1,0 +1,141 @@
+﻿@using UniversityManagementSystemApp.Models
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<Department> aDepartments = ViewBag.Departmentlist;
+}
+<link href="~/Content/bootstrap-datepicker3.min.css" rel="stylesheet" />
+@*<link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />*@
+
+<div>
+    <div>
+        <fieldset>
+            <legend>Register a Student</legend>
+            <form id="RegisterStudentForm" method="POST">
+                <div align="center">
+                    <table class="form-horizontal">
+                        <tr>
+                            <td><label for="Name"></label>Name</td>
+                            <td><input type="text" name="Name" id="Name" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="Email">Email</label></td>
+                            <td><input type="email" name="Email" id="Email" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="Contactno">Contact no</label></td>
+                            <td><input type="text" name="Contactno" id="Contactno" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="RegistrationDate"></label>Date</td>
+                            <td>
+                                <div class='input-group date' id='DatePicker'>
+                                <input type="text" id="RegistrationDate" name="RegistrationDate" class="form-control" />
+                                    <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="Address">Address</label></td>
+                            <td><textarea id="Address" name="Address" rows="3" cols="19"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><label for="DepartmentID">Depetment</label></td>
+                            <td>
+                                <select name="DepartmentID" id="DepartmentID">
+                                    <option value="">Pls select Your Deparment</option>
+                                    @foreach (Department aDepartment in aDepartments)
+                                    {
+                                        <option value="@aDepartment.Id">@aDepartment.Name</option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><input type="submit" name="submit" value="Register" class="btn btn-primary" /></td>
+                        </tr>
+                    </table>
+                </div>
+                <div>
+                    <p>
+                        @if (ViewBag.message != null)
+                        {
+                        <p>@ViewBag.message</p>
+                        }
+                        </p>
+                    </div>
+
+                </form>
+            </fieldset>
+
+        </div>
+
+    </div>
+    @section scripts
+    {
+        <script src="~/Scripts/jquery-2.2.4.js"></script>
+        <script src="~/Scripts/jquery.validate.min.js"></script>
+        <script src="~/Scripts/bootstrap-datepicker.js"></script>
+        @*<script src="~/Scripts/jquery-ui-1.12.1.js"></script>*@
+        <script>
+            //function getFormattedDate(date1) {
+            //    var year = date1.getFullYear();
+
+            //   var month = (1 + date1.getMonth()).toString();
+            //    month = month.length > 1 ? month : '0' + month;
+
+            //    var day = date1.getDate().toString();
+            //    day = day.length > 1 ? day : '0' + day;
+
+            //    return day + '-' + month + '-' + year;
+            //}
+            $(document).ready(function() {
+                //var currentDate = getFormattedDate(new Date());
+                //var n = Date.parse(currentDate);
+
+                $('#DatePicker').datepicker({
+                    showOtherMonths: true,
+                    format: "mm-dd-yyyy"
+
+                });
+            
+            $('#DatePicker').datepicker("setDate", new Date());
+
+
+            $("#RegisterStudentForm").validate({
+                rules: {
+                    Name: {
+                        required: true,
+                        number: false
+                    },
+                    Email: "required",
+                    Contactno: {
+                        required: true,
+                        number: true
+                    },
+                    Department_Code: "required",
+                    Address: "required",
+                    RegistrationDate: "required"
+                },
+                messages: {
+                    Name: {
+                        required: "Please enter student name",
+                        number: "Name can't contain number"
+                    },
+                    Contactno: {
+                        required: "Please enter contact number",
+                        number: "Contactno can't contain alphabet"
+                    },
+                    Email: "Please enter correct email",
+                    Department_Code: "Please select a department",
+                    Address: "Please enter your address",
+                    RegistrationDate: "Please select a date"
+                }
+            });
+        });
+
+        </script>
+    }
+

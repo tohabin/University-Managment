@@ -1,0 +1,80 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+
+<div>
+    <fieldset>
+        <legend>Save Department</legend>
+        <form id="departmentsubmit" method="POST">
+            <div align="center">
+                <table style="align-content: center">
+                    <tr>
+                        <td><label for="Code">Code</label></td>
+                        <td><input type="text" id="Code" name="Code"/></td>
+                    </tr>
+                    <tr>
+                        <td><label for="Name">Name</label></td>
+                        <td><input name="Name" id="Name" type="text"/></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><input type="submit" value="Save"/></td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+        @if (ViewBag.message != null)
+        {
+            <p>@ViewBag.message</p>
+        }
+
+    </fieldset>
+</div>
+    @section scripts
+{
+        <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+        <script src="~/Scripts/jquery.validate.min.js"></script>
+        <script>
+            $().ready(function () {
+                $("#departmentsubmit").validate({
+                    rules: {
+                        Name: {
+                            required: true,
+                            number: false
+                        },
+
+                        Code: {
+                            required: true,
+
+                            minlength: 2,
+                            maxlength: 7
+                        }
+
+                    },
+                    messages: {
+                        Code: {
+                            required: "Please enter the department code",
+                            minlength: "The range must be more than 1",
+                            maxlength: "The range must be at most 7"
+                        },
+
+                        Name: {
+                            required: "Please enter the department name",
+                            number: "Name can not contain number"
+                        }
+                    }
+                });
+            });
+        </script>
+    }
+    
+</body>
+</html>

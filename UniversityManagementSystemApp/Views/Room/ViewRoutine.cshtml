@@ -1,0 +1,103 @@
+﻿@using UniversityManagementSystemApp.Models
+@model ViewRoutine
+@{
+    ViewBag.Title = "ViewRoutine";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<Department> aDepartments = ViewBag.DepatmentList;
+}
+
+<link href="~/Content/DataTables/css/jquery.dataTables.css" rel="stylesheet" />
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6">
+            <h4 class=caption>View Course Statics</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-4">
+            <form method="POST" id="myForm">
+                <table>
+                    <tr>
+                        <td><label for="Department_Id"></label></td>
+                        <td>
+                            <select name="Department_Id" id="Department_Id">
+                                <option value="null">Select your Department</option>
+                                @foreach (Department aDepartment in aDepartments)
+                                {
+                                    <option value="@aDepartment.Id">@aDepartment.Name</option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+
+            </form>
+
+
+
+        </div>
+        <div class="col-lg-4"></div>
+
+    </div>
+
+</div>
+<table id="myTable" class="table table-responsive table-hover">
+    <thead>
+        <tr>
+            <td>Course Code</td>
+            <td>Name/Title</td>
+            <td>Schedule</td>
+           
+        </tr>
+    </thead>
+    <tbody id="tablebody"></tbody>
+</table>
+
+<p>
+
+
+</p>
+@section scripts
+{
+    <script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function () {
+
+
+            $("#Department_Id").change(function () {
+                var deptId = $("#Department_Id").val();
+                $("#tablebody").empty();
+
+
+                var json = { Department_Id: deptId };
+                $.ajax({
+                    type: "POST",
+                    @*//url: '@Url.Action("ViewAssigendCourse", "Course")',*@
+                    url: '/Room/ViewFullRoutine',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (data) {
+
+
+                        $.each(data, function (key, value) {
+                            
+                            if (value.RoomName === '' || value.Day === '' || value.StarTime === '' || value.EndTime=== '') {
+
+                                value.RoomName = "Not Assigned Yet";
+                            } else {
+                                value.RoomName = "Room: " + value.RoomName + ", " + value.Day + ", " + value.StarTime + "-" + value.EndTime;
+                            }
+
+
+                            $("#tablebody").append('<tr><td>' + value.CourseCode + '</td><td>' + value.CourseName + '</td><td>' + value.RoomName + '</td></tr>');
+                        });
+                        $("#myTable").show();
+                        $("#myTable").DataTable();
+                    }
+                });
+            });
+        });
+    </script>
+}
+
